@@ -13,45 +13,10 @@
 #include <chrono>
 #include <set>
 
-#include "ThreadSafeOstream.h"
 #include "ThreadPool.h"
 
-//void test()
-//{
-//    std::filesystem::path cwd = std::filesystem::current_path();
-//    std::cout << cwd.string();
-//}
-/*
- 0 incorrect letter
- 1 correct letter
- 2 correct place
-*/
-//struct PopularChars {
-//    bool operator(const int& a, const int& b) {
-//        return 
-//    }
-//};
-//std::vector<std::pair<char, int>> popularChars() {
-//    std::vector<std::pair<char, int>> popularChars;
-//    bool found;
-//    for (const auto& [c, count] : m_popularity) {
-//        found = false;
-//        for (auto iter = popularChars.begin(); iter != popularChars.end(); ++iter) {
-//            if (count >= m_popularity[iter->first]) {
-//                popularChars.insert(iter + 1, *iter);
-//                found = true;
-//                break;
-//            }
-//        }
-//        if (!found) {
-//            popularChars.push_back({ c, count });
-//        }
-//    }
-//    return popularChars;
-//}
 using result = std::array<int, 5>;
 static constexpr result defaultResult = result{ 0,0,0,0,0 };
-
 
 class DictManager {
 
@@ -183,54 +148,7 @@ private:
         return score;
     }
 
-    // toast, ghost, 00122
     bool keepWord(std::string_view word, std::string_view guess, result res) {
-
-        //std::vector<size_t> usedIndexes;
-        //usedIndexes.reserve(5);
-        //for (int i = 0; i < 5; i++) {
-        //    auto r = res[i];
-        //    auto g = guess[i];
-        //
-        //    if (r == 2) {
-        //        if (word[i] == g) {
-        //            usedIndexes.push_back(i);
-        //        }
-        //        else {
-        //            return false;
-        //        }
-        //    }
-        //}
-        //for (size_t i = 0; i < 5; i++) {
-        //    auto r = res[i];
-        //    char g = guess[i];
-        //    if (r == 1) {
-        //        bool found = false;
-        //        for (size_t j = 0; j < 5; j++) {
-        //            char s = word[j];
-        //            bool indexIsUsed = std::find(usedIndexes.begin(), usedIndexes.end(), j) != usedIndexes.end();
-        //            if (!indexIsUsed && g == s) {
-        //                found = true;
-        //                usedIndexes.push_back(j);
-        //                break;
-        //            }
-        //        }
-        //        if (!found) return false;
-        //    }
-        //}
-        //for (size_t i = 0; i < 5; i++) {
-        //    auto r = res[i];
-        //    char g = guess[i];
-        //    if (r == 0) {
-        //        for (size_t j = 0; j < 5; j++) {
-        //            char s = word[j];
-        //            bool indexIsUsed = std::find(usedIndexes.begin(), usedIndexes.end(), j) != usedIndexes.end();
-        //            if (!indexIsUsed && g == s) {
-        //                return false;
-        //            }
-        //        }
-        //    }
-        //}
         std::map<size_t, char> oneIndexLocations; // indexes where res[i] = 1
 
         for (int i = 0; i < 5; i++) {
@@ -368,7 +286,6 @@ bool isComplete(result res) {
     return true;
 }
 
-// knowledge primed initial guess and popularity
 int iterationCount(Knowledge knowledge, std::string_view initialGuess, std::string_view secret, std::shared_ptr<std::ofstream> outTxt) {
     result res = defaultResult;
     std::string_view guess = initialGuess;
@@ -446,36 +363,12 @@ void baseLineAlgorithm(DictManager& dict, Knowledge& knowledge) {
         }
     }
 
-
-    //std::vector<std::future<int>> futures;
-    //std::vector<float> averageVec;
-    //averageVec.reserve(wordCount);
-    //futures.reserve(wordCount);
-    //
-    //for (int i = 0; i < wordCount; i++) {
-    //    std::string_view secret = dict.word(i);
-    //    const auto& job = [knowledge, initialGuess, secret]() mutable {
-    //        return iterationCount(knowledge, initialGuess, secret);
-    //    };
-    //    futures.push_back(tp.submit(job));
-    //}
-    //for (int i = 0; i < wordCount; i++) {
-    //    auto& res = futures.at(i);
-    //    averageVec.push_back(res.get());
-    //}
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::minutes>(stop - start);
     if (outTxt) outTxt->close();
 
     std::cout << "The average is: " << average(averageVec) << ", duration: " << duration.count() << '\n';
 }
-
-/*
-        Knowledge currentKnowledge = knowledge;
-        count = iterationCount(currentKnowledge, initialGuess, dict.word(i));
-        averageVec.push_back(count);
-*/
-
 
 void runAgainstWebsite(DictManager& dict, Knowledge& knowledge) {
     std::optional<result> res = defaultResult;
